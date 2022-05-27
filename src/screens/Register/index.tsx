@@ -1,11 +1,12 @@
 import React, { useState} from 'react';
 import { 
     Keyboard, 
-    Modal, 
-    TouchableWithoutFeedback,
+    Modal,
     Alert,
 
 } from 'react-native';
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -87,7 +88,7 @@ export function Register () {
     }
    
 
-    function handleTransactionsTypeSelect(type: 'up' | 'down') {
+    function handleTransactionsTypeSelect(type: 'positive' | 'negative') {
         setTransactionType(type);
     }
         
@@ -112,8 +113,9 @@ export function Register () {
            id: String(uuid.v4()), 
            name: form.name,
            amount: form.amount,
-           TransactionType,
-           category: category.key
+           type: TransactionType,
+           category: category.key,
+           date: new Date()
 
         }
         
@@ -165,85 +167,89 @@ export function Register () {
 
     return(
 
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
-        
-        <Container>
-           
-            <Header>
-                <Title>Cadastro</Title>
-            </Header>
+        <TouchableWithoutFeedback 
+            onPress={Keyboard.dismiss}
+            containerStyle={{ flex: 1}}
+            style={{ flex: 1}}
+            > 
             
+            <Container>
             
-        <Form>
-            <Fields>
-                <InputForm
-                    name="name"
-                    control={control}
-                    placeholder="Nome" 
-                    placeholderTextColor="grey"
-                    autoCapitalize="sentences" // define como quero colocar em maiusculo cada palavra/sentenca
-                    autoCorrect={false} //serve para corrigir palavras
-                    error={errors.name && errors.name.message}
+                <Header>
+                    <Title>Cadastro</Title>
+                </Header>
+                
+                
+            <Form>
+                <Fields>
+                    <InputForm
+                        name="name"
+                        control={control}
+                        placeholder="Nome" 
+                        placeholderTextColor="grey"
+                        autoCapitalize="sentences" // define como quero colocar em maiusculo cada palavra/sentenca
+                        autoCorrect={false} //serve para corrigir palavras
+                        error={errors.name && errors.name.message}
 
-                    //onChangeText={setName} // ou text => setname(text)
+                        //onChangeText={setName} // ou text => setname(text)
+
+                    />
+                    <InputForm
+                        name="amount"
+                        control={control}
+                        placeholder="Preço" 
+                        placeholderTextColor="grey"
+                        keyboardType="numeric" //muda o teclado ou para texto ou para númerico dependendo da necessidade
+                        error={errors.amount && errors.amount.message}
+                        //onChangeText={setAmount}
+
+                    />
+                    <TransactionTypes>
+                        <TransactionTypeButton
+                            type="up"
+                            title="Income"
+                            onPress={() => handleTransactionsTypeSelect('positive')}
+                            isActive={TransactionType === 'positive'}
+                        />
+                        <TransactionTypeButton
+                            type="down"
+                            title="Outcome"
+                            onPress={() => handleTransactionsTypeSelect('negative')}
+                            isActive={TransactionType === 'negative'}
+                        />
+                    </TransactionTypes> 
+
+                    <CategorySelectButton
+                        title={category.name}
+                        onPress={handleOpenSelectCategoryModal}
+                    />   
+
+            
+                </Fields>
+                <Button 
+                    title="Enviar"
+                    onPress={handleSubmit(handleRegister)}
+                />
+                
+            </Form>
+
+            <Modal visible={categoryModalOpen}>
+                <CategorySelect
+                        category={category}
+                        setCategory={setCategory}
+                        closeSelectCategory={handleCloseSelectCategoryModal}
 
                 />
-                <InputForm
-                    name="amount"
-                    control={control}
-                    placeholder="Preço" 
-                    placeholderTextColor="grey"
-                    keyboardType="numeric" //muda o teclado ou para texto ou para númerico dependendo da necessidade
-                    error={errors.amount && errors.amount.message}
-                    //onChangeText={setAmount}
 
-                />
-                <TransactionTypes>
-                    <TransactionTypeButton
-                        type="up"
-                        title="Income"
-                        onPress={() => handleTransactionsTypeSelect('up')}
-                        isActive={TransactionType === 'up'}
-                    />
-                    <TransactionTypeButton
-                        type="down"
-                        title="Outcome"
-                        onPress={() => handleTransactionsTypeSelect('down')}
-                        isActive={TransactionType === 'down'}
-                    />
-                </TransactionTypes> 
+                
+            </Modal>
 
-                <CategorySelectButton
-                    title={category.name}
-                    onPress={handleOpenSelectCategoryModal}
-                />   
-
-           
-            </Fields>
-            <Button 
-                title="Enviar"
-                onPress={handleSubmit(handleRegister)}
-            />
             
-           </Form>
-
-           <Modal visible={categoryModalOpen}>
-               <CategorySelect
-                    category={category}
-                    setCategory={setCategory}
-                    closeSelectCategory={handleCloseSelectCategoryModal}
-
-               />
-
-               
-           </Modal>
-
-         
+                
             
-        
 
-        </Container>
-    </TouchableWithoutFeedback> //Ao tocar em qualquer ambiente na tela o teclado fecha
+            </Container>
+        </TouchableWithoutFeedback> //Ao tocar em qualquer ambiente na tela o teclado fecha
 
     );
 }

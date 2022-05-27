@@ -50,6 +50,8 @@ export function Dashboard(){
 
    const theme = useTheme();
 
+   AsyncStorage.removeItem('@gofinances:transactions')
+
    async function loadTransaction(){
     const dataKey = '@gofinances:transactions';
     const response = await AsyncStorage.getItem(dataKey);
