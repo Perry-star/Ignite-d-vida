@@ -31,7 +31,7 @@ export const Container = styled.View<TypeProps>`
 
     export const  Title = styled.Text<TypeProps>`
         font-family: ${({ theme }) => theme.fonts.regular};
-        font-size: ${RFValue(14)};
+        font-size: ${RFValue(14)}px;
 
 
         color :${({ theme, type})=> 

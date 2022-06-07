@@ -14,7 +14,7 @@ export const Header = styled.View`
     height: ${RFValue(113)}px;
 
     align-items: center;
-    justify-content: flex-end
+    justify-content: flex-end;
     padding-bottom: 19px;
 
 `;
@@ -31,7 +31,7 @@ export const Content = styled.ScrollView.attrs({
 
 export const ChartContainer = styled.View`
     width: 100%;
-    align-items: 
+    align-items: center;
 `;
 
 
